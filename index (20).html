@@ -1,0 +1,337 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>HTML & CSS – Première NSI</title>
+<style>
+/* ====== Thèmes ====== */
+:root{--bg:#f4f6fa;--pn:#fff;--pn2:#eaeef5;--tx:#1b2433;--mu:#5d6b82;--ac:#1f6feb;--tag:#c2410c;--ok:#15803d;--ko:#c62828;--bd:#d5dbe6;--code:#0f1623;--ct:#d6e2f5;--mono:"JetBrains Mono",Consolas,Menlo,monospace}
+:root[data-t=dark]{--bg:#10151e;--pn:#171e2a;--pn2:#1f2837;--tx:#e4eaf4;--mu:#93a1b8;--ac:#5ab0ff;--tag:#f2b84b;--ok:#4ade80;--ko:#ff7b72;--bd:#2b3648}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font:16px/1.6 system-ui,sans-serif}
+#app{display:flex;min-height:100vh}
+nav{width:270px;background:var(--pn);border-right:1px solid var(--bd);padding:14px;position:sticky;top:0;height:100vh;overflow:auto;flex:none}
+nav h1{font:700 17px var(--mono);margin:0 0 10px;color:var(--ac)}
+nav button.it{display:block;width:100%;text-align:left;background:none;border:0;color:var(--tx);padding:8px 10px;border-radius:6px;cursor:pointer;font:inherit;font-size:14px}
+nav button.it:hover{background:var(--pn2)} nav button.it.cur{background:var(--ac);color:#fff}
+nav button.it.done::after{content:" ✓";color:var(--ok)} nav button.it.cur.done::after{color:#fff}
+.bar{height:8px;background:var(--pn2);border-radius:4px;overflow:hidden;margin:6px 0 12px}.bar i{display:block;height:100%;background:var(--ac);width:0;transition:width .5s}
+main{flex:1;padding:24px clamp(14px,4vw,48px);max-width:1100px;min-width:0}
+.top{display:none}
+h2{font-size:26px;margin:0 0 4px}h3{margin:22px 0 6px}
+.sub{color:var(--mu);margin-bottom:16px}
+.card{background:var(--pn);border:1px solid var(--bd);border-radius:10px;padding:16px;margin:14px 0}
+.tip{border-left:4px solid var(--ac);background:var(--pn2);padding:10px 14px;border-radius:0 8px 8px 0;margin:12px 0}
+.warn{border-left-color:var(--ko)}
+pre.code,textarea,.mono{font-family:var(--mono);font-size:13.5px}
+pre.code{background:var(--code);color:var(--ct);padding:12px;border-radius:8px;overflow:auto;margin:8px 0;white-space:pre-wrap}
+code{font-family:var(--mono);background:var(--pn2);padding:1px 5px;border-radius:4px;color:var(--tag)}
+button.b{background:var(--ac);color:#fff;border:0;border-radius:6px;padding:7px 14px;cursor:pointer;font:inherit;font-size:14px;margin:3px 3px 3px 0}
+button.b.g{background:var(--pn2);color:var(--tx);border:1px solid var(--bd)}
+button.b:focus-visible,nav button:focus-visible,textarea:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--ac);outline-offset:1px}
+.lab{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.ed textarea{width:100%;height:150px;background:var(--code);color:var(--ct);border:1px solid var(--bd);border-radius:8px;padding:10px;resize:vertical;tab-size:2;white-space:pre;display:block;margin-bottom:6px}
+.ed label{font:600 12px var(--mono);color:var(--mu)}
+iframe{width:100%;height:100%;min-height:200px;background:#fff;border:1px solid var(--bd);border-radius:8px}
+.big .ed textarea{height:260px}.big iframe{min-height:360px}
+.gw{display:flex;background:var(--code);border:1px solid var(--bd);border-radius:8px;margin-bottom:6px}
+.gw .gut{padding:10px 6px;color:#6b7a93;text-align:right;font:13.5px/1.2 var(--mono);user-select:none;overflow:hidden;height:150px;white-space:pre}
+.big .gw .gut{height:260px}
+.gw textarea{border:0;margin:0;flex:1;border-radius:0 8px 8px 0;line-height:1.2;height:150px;resize:none}.big .gw textarea{height:260px}
+.err{font:13px var(--mono);color:var(--ko);min-height:18px}
+.ok{color:var(--ok);font-weight:600}.ko{color:var(--ko);font-weight:600}
+.tk{display:inline-block;font:13px var(--mono);background:var(--code);color:var(--tag);padding:2px 6px;border-radius:4px;margin:2px}
+.stage{display:flex;gap:10px;flex-wrap:wrap;align-items:center;justify-content:center}
+.box{border:2px solid var(--bd);border-radius:10px;padding:10px 14px;text-align:center;opacity:.35;transition:.4s;min-width:130px;background:var(--pn2)}
+.box.on{opacity:1;border-color:var(--ac);transform:scale(1.05)}
+.arr{font-size:24px;color:var(--mu)}
+table{border-collapse:collapse;width:100%;font-size:14px;display:block;overflow:auto}
+th,td{border:1px solid var(--bd);padding:6px 10px;text-align:left}th{background:var(--pn2)}
+select,input[type=text],input:not([type]){background:var(--pn);color:var(--tx);border:1px solid var(--bd);border-radius:5px;padding:4px 6px;font:13px var(--mono)}
+.demo div.e{border:2px dashed var(--ac);margin:4px;padding:6px 10px;background:var(--pn2);transition:.4s}
+.demo .e.inl{display:inline-block}
+@media(max-width:800px){#app{display:block}nav{position:fixed;left:-290px;z-index:9;transition:.3s;width:270px}nav.o{left:0;box-shadow:0 0 0 100vw #0007}.top{display:flex;gap:8px;margin-bottom:10px}.lab{grid-template-columns:1fr}}
+@media print{nav,.noprint,.top{display:none!important}main{max-width:none}body{background:#fff;color:#000}.card{break-inside:avoid}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div id="app">
+<nav id="nav"><h1>&lt;/NSI&gt; HTML+CSS</h1><div class="bar"><i id="pb"></i></div><small id="pt" class="mono"></small>
+<button class="b" id="resume" style="width:100%;margin:8px 0">▶ Reprendre le cours</button><div id="menu"></div>
+<button class="b g" id="theme" style="width:100%;margin-top:10px">☀/🌙 Mode clair / sombre</button></nav>
+<main><div class="top"><button class="b" id="burger">☰ Menu</button></div><div id="view"></div></main>
+</div>
+<script>
+/* ============ Utilitaires ============ */
+const $=(s,r=document)=>r.querySelector(s),$$=(s,r=document)=>[...r.querySelectorAll(s)];
+const esc=s=>s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+const code=s=>`<pre class="code">${esc(s)}</pre>`;
+const norm=s=>s.toLowerCase().replace(/\s+/g,' ').trim();
+const store={get(k,d){try{return JSON.parse(localStorage.getItem('nsi_'+k))??d}catch(e){return d}},set(k,v){try{localStorage.setItem('nsi_'+k,JSON.stringify(v))}catch(e){}}};
+const VOID=['br','img','input','meta','link','hr'];
+/* Vérifie l'équilibre des balises : renvoie {ok,msg} */
+function balance(src){const st=[],re=/<(\/?)([a-z][a-z0-9]*)[^>]*?>/gi;let m;
+ while((m=re.exec(src))){const c=m[1],n=m[2].toLowerCase();if(VOID.includes(n))continue;
+  if(!c)st.push(n);else{const t=st.pop();if(t!==n)return{ok:false,msg:t?`Erreur d'imbrication : </${n}> rencontrée alors que <${t}> est encore ouverte.`:`Balise fermante </${n}> sans balise ouvrante.`}}}
+ return st.length?{ok:false,msg:`Balise non fermée : <${st[st.length-1]}>.`}:{ok:true,msg:''}}
+/* Construit le document de l'aperçu (CSS injecté à la place du <link>) */
+function build(h,c){let d=h.replace(/<link[^>]*stylesheet[^>]*>/i,`<style>${c}</style>`);if(d===h)d=h+`<style>${c}</style>`;return `<style>body{font:15px system-ui,sans-serif;margin:8px}</style>`+d}
+/* Mini-laboratoire (éditeur + aperçu dans une iframe sandbox isolée) */
+function lab(h,c,big){return `<div class="lab ${big?'big':''}"><div class="ed"><label>HTML</label><textarea class="h" spellcheck="false">${esc(h)}</textarea>${c===null?'':`<label>CSS</label><textarea class="c" spellcheck="false">${esc(c)}</textarea>`}</div><div><iframe sandbox title="Aperçu"></iframe></div></div>`}
+function initLabs(root){$$('.lab',root).forEach(l=>{const f=$('iframe',l),h=$('.h',l),c=$('.c',l);const up=()=>f.srcdoc=build(h.value,c?c.value:'');l.addEventListener('input',up);up()})}
+
+/* ============ Modules ============ */
+const M=[];
+const mod=(t,h,i)=>M.push({t,h,i});
+
+mod('1. Découvrir le HTML',()=>`
+<h2>Découvrir le HTML</h2><p class="sub">Le HTML décrit la page. Le navigateur l'affiche.</p>
+<div class="card"><b>HyperText Markup Language</b> = langage de <b>balisage</b> « conçu pour représenter les pages web ».
+<div class="tip warn">HTML n'est <b>pas</b> un langage de programmation (comme Python) : pas de conditions, pas de boucles. C'est un langage de <b>description</b>.</div></div>
+<table><tr><th>Langage</th><th>Rôle</th></tr><tr><td>HTML</td><td>Contenu et structure (titres, paragraphes, liens, images, formulaires…)</td></tr><tr><td>CSS</td><td>Présentation : couleurs, polices, mise en page</td></tr><tr><td>JavaScript</td><td>Comportement : programme qui s'exécute dans la page</td></tr></table>
+<h3>Animation : du code à la page</h3>
+<div class="card"><div class="stage" id="a1"><div class="box"><b>1. Code HTML</b><br><small>fichier texte</small></div><span class="arr">→</span><div class="box"><b>2. Navigateur</b><br><small>lit les balises</small></div><span class="arr">→</span><div class="box"><b>3. Page affichée</b><br><small>titre, texte…</small></div></div>
+<p id="a1t" class="sub" style="text-align:center">Appuie sur « Étape suivante ».</p>
+<div style="text-align:center"><button class="b" id="a1n">Étape suivante</button><button class="b g" id="a1r">Recommencer</button></div></div>
+<h3>À faire vous-même 1</h3><p>Modifie le code et observe. Qu'est-ce qui s'affiche ?</p>
+${lab(`<h1>Hello World! Ceci est un titre</h1>\n<p>Ceci est un <strong>paragraphe</strong>. Avez-vous bien compris ?</p>`,null)}`,
+()=>{let s=0;const T=['Le fichier HTML est un simple texte contenant des balises.','Le navigateur (Firefox, Chrome…) lit le texte et interprète chaque balise.','Il affiche le résultat : <h1> devient un grand titre, <p> un paragraphe.'];
+$('#a1n').onclick=()=>{s=Math.min(3,s+1);$$('#a1 .box').forEach((b,i)=>b.classList.toggle('on',i<s));$('#a1t').textContent=T[s-1]};
+$('#a1r').onclick=()=>{s=0;$$('#a1 .box').forEach(b=>b.classList.remove('on'));$('#a1t').textContent='Appuie sur « Étape suivante ».'}});
+
+mod('2. Comprendre les balises',()=>`
+<h2>Comprendre les balises</h2><p class="sub">Tout est une histoire de balises qu'on ouvre et qu'on ferme.</p>
+<div class="card"><pre class="code">&lt;p&gt;Du contenu&lt;/p&gt;
+ ↑ ouvrante   ↑ fermante</pre>
+Ouvrante : <code>&lt;nom&gt;</code> · Fermante : <code>&lt;/nom&gt;</code> · Auto-fermante : <code>&lt;br/&gt;</code>, <code>&lt;img/&gt;</code>.
+<br>Ouvrante et fermante peuvent être sur la même ligne ou non : seule compte la question « ai-je refermé tout ce que j'ai ouvert ? ».</div>
+<div class="tip warn"><b>Imbrication</b> : la dernière balise ouverte doit être la première fermée.
+${code('<balise1>\n  <balise2>\n  </balise1>   ← INTERDIT\n</balise2>')}${code('<balise1>\n  <balise2>\n  </balise2>\n</balise1>   ← CORRECT')}</div>
+<h3>Construis une structure</h3><div class="card"><p>Clique sur les balises dans l'ordre pour construire <code>&lt;p&gt;Un &lt;strong&gt;mot&lt;/strong&gt;&lt;/p&gt;</code>.</p>
+<div id="tb"></div><pre class="code" id="tout" style="min-height:44px"></pre><div id="tst"></div>
+<button class="b g" id="tre">Effacer</button><button class="b g" id="tbad">Montrer une erreur</button></div>`,
+()=>{let seq=[];const out=$('#tout'),st=$('#tst');
+['<p>','<strong>','</strong>','</p>','<h1>','</h1>'].forEach(t=>{const b=document.createElement('button');b.className='b';b.textContent=t;b.onclick=()=>{seq.push(t);r()};$('#tb').append(b)});
+function r(){const s=seq.join('');out.textContent=seq.join(' ')||'';if(!seq.length){st.textContent='';return}const b=balance(s);st.innerHTML=b.ok?'<span class="ok">✔ Structure correcte : toutes les balises sont bien fermées et imbriquées.</span>':`<span class="ko">✘ ${esc(b.msg)}</span>`}
+$('#tre').onclick=()=>{seq=[];r()};$('#tbad').onclick=()=>{seq=['<p>','<strong>','</p>','</strong>'];r();st.innerHTML+='<br>Pourquoi ? <code>&lt;strong&gt;</code> a été ouverte après <code>&lt;p&gt;</code> : elle doit être fermée <b>avant</b>.'}});
+
+mod('3. Les principales balises',()=>`
+<h2>Les principales balises</h2><p class="sub">Choisis une balise, lis son rôle, modifie le code.</p>
+<div id="tags"></div><div class="card" id="tagc"></div>`,
+()=>{const T={
+h1:['Titre important (h2, h3… = sous-titres moins importants).','<h1>Titre</h1>',`<h1>Titre principal</h1>\n<h2>Sous-titre</h2>\n<h3>Sous-sous-titre</h3>`],
+p:['Définit un paragraphe.','<p>Texte</p>',`<p>Un premier paragraphe.</p>\n<p>Un second paragraphe.</p>`],
+strong:['Met en évidence un texte important.','<strong>Texte</strong>',`<p>Ceci est un <strong>mot important</strong>.</p>`],
+br:['Saute une ligne (balise auto-fermante, à éviter).','<br/>',`<p>Première ligne<br/>Deuxième ligne</p>`],
+a:['Crée un lien hypertexte.','<a href="adresse">Texte</a>',`<p>Va sur <a href="https://www.google.fr">google.fr</a></p>`],
+img:['Insère une image (auto-fermante).','<img src="image.jpg" alt="description"/>',`<img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='50'%3E%3Crect width='80' height='50' fill='%231f6feb'/%3E%3C/svg%3E" alt="rectangle bleu"/>`],
+form:['Délimite un formulaire.','<form>…</form>',`<form>\n  <p>Nom : <input type="text"/></p>\n</form>`],
+input:['Champ de saisie ; son attribut type change son rôle.','<input type="text"/>',`<p><input type="text"/> <input type="checkbox"/></p>`],
+button:['Un bouton cliquable.','<button>Texte</button>',`<button>Cliquez ici !</button>`],
+div:['Conteneur générique de type block (sans signification).','<div>…</div>',`<div>Un bloc</div>\n<div>Un autre bloc</div>`],
+span:['Conteneur générique de type inline.','<span>…</span>',`<p>Du texte <span style="color:red">en rouge</span> dans un paragraphe.</p>`]};
+const bar=$('#tags');Object.keys(T).forEach(k=>{const b=document.createElement('button');b.className='b g';b.textContent='<'+k+'>';b.onclick=()=>show(k);bar.append(b)});
+function show(k){const[r,s,e]=T[k];$('#tagc').innerHTML=`<p><b>Rôle :</b> ${r}</p><p><b>Syntaxe :</b> <code>${esc(s)}</code></p><p><b>Essaie :</b> modifie le code, le résultat s'affiche à droite (explique chaque ligne en observant l'effet).</p>${lab(e,null)}`;initLabs($('#tagc'))}show('h1')});
+
+mod('4. Les attributs',()=>`
+<h2>Les attributs HTML</h2><p class="sub">Un attribut s'ajoute dans la balise ouvrante : <code>nom="valeur"</code></p>
+${code('<ma_balise attribut_1="valeur_1" attribut_2="valeur_2">')}
+<table><tr><th>Attribut</th><th>Rôle</th></tr><tr><td>id</td><td>Identifiant <b>unique</b> dans la page</td></tr><tr><td>class</td><td>Nom de groupe, réutilisable sur plusieurs éléments</td></tr><tr><td>href</td><td>Destination d'un lien (fichier ou adresse)</td></tr><tr><td>src</td><td>Fichier de l'image</td></tr><tr><td>alt</td><td>Description de l'image (accessibilité)</td></tr><tr><td>type</td><td>Rôle d'un <code>input</code> (text, checkbox…)</td></tr></table>
+<div class="tip warn"><b>id ≠ class</b> : un id ne peut être utilisé qu'<b>une fois</b> par page ; une class peut l'être plusieurs fois.</div>
+<h3>À faire vous-même 2</h3><p>Change <code>type</code>, <code>href</code>, <code>alt</code> et regarde l'effet.</p>
+${lab(`<h1>Ceci est un titre</h1>\n<h2 class="titre_1">Ceci est un sous titre</h2>\n<p id="para_1">Ceci est un <strong>paragraphe</strong>.</p>\n<a href="https://www.google.fr">Lien</a>\n<input type="text"/>`,null)}`);
+
+mod('5. Découvrir le CSS',()=>`
+<h2>Découvrir le CSS</h2><p class="sub">Cascading Style Sheets : le HTML = le contenu, le CSS = l'apparence.</p>
+${code('sélecteur\n{\n  propriété: valeur;\n}')}
+<p>Dans <code>h1 { text-align: center; }</code> : <b>h1</b> est le sélecteur, <b>text-align</b> la propriété, <b>center</b> la valeur.</p>
+<h3>Laboratoire CSS (À faire vous-même 3)</h3>
+<div class="card"><div class="lab"><div class="ed" id="cl">
+<p>h1 text-align <select data-p="text-align"><option>left<option selected>center<option>right</select></p>
+<p>h1 background-color <input data-p="background-color" value="red" size="9"></p>
+<p>h2 font-family <select data-q="font-family"><option selected>Verdana<option>Georgia<option>monospace</select></p>
+<p>h2 font-style <select data-q="font-style"><option>normal<option selected>italic</select></p>
+<p>h2 color <input data-q="color" value="green" size="9"></p><pre class="code" id="cg"></pre></div><div><iframe sandbox title="Aperçu"></iframe></div></div></div>
+<p>Dans cet exemple, les propriétés sont appliquées au contenu de <b>toutes</b> les balises h1 (ou h2).</p>
+<h3>Ou écris toi-même le CSS</h3>${lab(`<h1>Ceci est un titre</h1>\n<h2>Ceci est un sous titre</h2>\n<p>Ceci est un <strong>paragraphe</strong>.</p>`,`h1\n{\n  text-align: center;\n  background-color: red;\n}\nh2\n{\n  font-family: Verdana;\n  font-style: italic;\n  color: green;\n}`)}`,
+()=>{const root=$('#cl').parentNode.parentNode;const f=$('iframe',root),H=`<h1>Ceci est un titre</h1><h2>Ceci est un sous titre</h2><p>Ceci est un <strong>paragraphe</strong>.</p>`;
+const up=()=>{let a='',b='';$$('[data-p]',root).forEach(e=>a+=`  ${e.dataset.p}: ${e.value};\n`);$$('[data-q]',root).forEach(e=>b+=`  ${e.dataset.q}: ${e.value};\n`);const c=`h1\n{\n${a}}\nh2\n{\n${b}}`;$('#cg').textContent=c;f.srcdoc=build(H,c)};
+$('#cl').addEventListener('input',up);up()});
+
+mod('6. Sélecteurs id et class',()=>`
+<h2>Les sélecteurs : balise, #id, .class</h2>
+<table><tr><th>Sélecteur</th><th>Cible</th><th>Exemple</th></tr><tr><td>balise</td><td>tous les éléments de ce type</td><td><code>p { … }</code></td></tr><tr><td>#id</td><td>UN élément précis</td><td><code>#para_1 { … }</code></td></tr><tr><td>.class</td><td>PLUSIEURS éléments</td><td><code>.rouge { … }</code></td></tr></table>
+<h3>À faire vous-même 4 – démonstration</h3>
+<p>Seul le paragraphe 1 a l'id <code>para_1</code>. Les paragraphes 2 et 3 partagent la classe <code>special</code>. Change les attributs <code>id</code> et <code>class</code> dans le HTML, ou les sélecteurs dans le CSS, et observe qui change.</p>
+${lab(`<h1>Ceci est un titre</h1>\n<p id="para_1">Paragraphe 1 (id)</p>\n<p class="special">Paragraphe 2 (class)</p>\n<p class="special">Paragraphe 3 (class)</p>\n<p>Paragraphe 4 (aucun)</p>`,`#para_1\n{\n  font-style: italic;\n  color: green;\n}\n.special\n{\n  background-color: yellow;\n}\np\n{\n  font-family: Verdana;\n}`)}
+<div class="tip">Un 3e paragraphe peut avoir <code>class="para_1"</code> mais pas <code>id="para_1"</code> si ce nom est déjà utilisé : l'id doit rester unique. Un même élément peut cumuler plusieurs classes : <code>class="special gros"</code>.</div>`);
+
+mod('7. Structure d\'une page',()=>`
+<h2>Structure complète d'une page</h2><p class="sub">Construis la page étape par étape.</p>
+<div class="card"><pre class="code" id="s7c" style="min-height:230px"></pre><p id="s7t" style="min-height:48px"></p>
+<button class="b g" id="s7p">◀ Précédent</button><button class="b" id="s7n">Étape suivante ▶</button><button class="b g" id="s7a">▶▶ Lecture auto</button><button class="b g" id="s7r">Recommencer</button></div>
+<table><tr><th></th><th>head</th><th>body</th></tr><tr><td>Contient</td><td>informations sur la page (encodage, titre…)</td><td>tout ce qui s'affiche</td></tr></table>
+<div class="tip"><b>title ≠ h1</b> : <code>&lt;title&gt;</code> est le titre de l'onglet (dans le head, non affiché dans la page) ; <code>&lt;h1&gt;</code> est le titre visible dans la page.</div>
+<h3>À faire vous-même 5</h3>${lab(`<!doctype html>\n<html lang="fr">\n<head>\n  <meta charset="utf-8">\n  <title>Voici mon site</title>\n</head>\n<body>\n  <h1>Hello World! Ceci est un titre</h1>\n  <p>Ceci est un <strong>paragraphe</strong>. Avez-vous bien compris ?</p>\n</body>\n</html>`,null)}`,
+()=>{const S=[['<!doctype html>','Indique au navigateur que la page est en HTML5.'],['<html lang="fr">\n</html>','Racine obligatoire. lang="fr" : la page est en français.'],['<html lang="fr">\n<head>\n</head>\n</html>','head : l\'en-tête (informations, non affichées dans la page).'],['<html lang="fr">\n<head>\n  <meta charset="utf-8">\n</head>\n</html>','meta charset : encodage utf-8 (accents corrects).'],['<html lang="fr">\n<head>\n  <meta charset="utf-8">\n  <title>Voici mon site</title>\n</head>\n</html>','title : titre de la page dans l\'onglet du navigateur (≠ h1).'],['<html lang="fr">\n<head>\n  <meta charset="utf-8">\n  <title>Voici mon site</title>\n</head>\n<body>\n  <h1>Hello World!</h1>\n  <p>Ceci est un <strong>paragraphe</strong>.</p>\n</body>\n</html>','body : tout le contenu visible de la page.']];
+let i=0,tm;const show=()=>{$('#s7c').textContent=(i?'<!doctype html>\n':'')+S[i][0].replace(i?/^$/:/^$/,'');$('#s7c').textContent=i?'<!doctype html>\n'+S[i][0]:S[0][0];$('#s7t').innerHTML=`<b>Étape ${i+1}/6 :</b> ${S[i][1]}`};
+const stop=()=>clearInterval(tm);
+$('#s7n').onclick=()=>{stop();i=Math.min(5,i+1);show()};$('#s7p').onclick=()=>{stop();i=Math.max(0,i-1);show()};$('#s7r').onclick=()=>{stop();i=0;show()};
+$('#s7a').onclick=()=>{stop();i=0;show();tm=setInterval(()=>{if(i>=5)return stop();i++;show()},1800)};show()});
+
+mod('8. Associer HTML et CSS',()=>`
+<h2>Associer HTML et CSS</h2><p class="sub">Deux fichiers, dans le même dossier : <code>index.html</code> et <code>style.css</code>.</p>
+<div class="card"><div class="stage" id="a8"><div class="box"><b>index.html</b><br><small>contenu + <code>&lt;link&gt;</code></small></div><span class="arr">→</span><div class="box"><b>style.css</b><br><small>règles de style</small></div><span class="arr">→</span><div class="box"><b>Navigateur</b><br><small>page stylée</small></div></div>
+<p id="a8t" class="sub" style="text-align:center">Appuie sur « Étape suivante ».</p><div style="text-align:center"><button class="b" id="a8n">Étape suivante</button><button class="b g" id="a8r">Recommencer</button></div></div>
+${code('<head>\n  <meta charset="utf-8">\n  <title>Voici mon site</title>\n  <link rel="stylesheet" href="style.css">\n</head>')}
+<ul><li><code>rel="stylesheet"</code> : le fichier lié est une feuille de style.</li><li><code>href="style.css"</code> : chemin du fichier (ici, même dossier).</li></ul>
+<p>Avec un dossier CSS : ${code('<link rel="stylesheet" href="CSS/style.css">')}</p>
+<h3>À faire vous-même 6 (le &lt;link&gt; est remplacé par le CSS saisi)</h3>
+${lab(`<!doctype html>\n<html lang="fr">\n<head>\n  <meta charset="utf-8">\n  <title>Voici mon site</title>\n  <link rel="stylesheet" href="style.css">\n</head>\n<body>\n  <h1>Hello World! Ceci est un titre</h1>\n  <p>Ceci est un <strong>paragraphe</strong>.</p>\n</body>\n</html>`,`h1\n{\n  text-align: center;\n  background-color: red;\n}\np\n{\n  font-family: Verdana;\n  font-style: italic;\n  color: green;\n}`)}
+<p>Supprime la ligne <code>&lt;link …&gt;</code> : le CSS n'est plus appliqué.</p>`,
+()=>{let s=0;const T=['Le navigateur ouvre index.html.','Il lit la ligne <link> et va chercher style.css.','Il applique les règles CSS au contenu HTML et affiche la page.'];
+$('#a8n').onclick=()=>{s=Math.min(3,s+1);$$('#a8 .box').forEach((b,i)=>b.classList.toggle('on',i<s));$('#a8t').textContent=T[s-1]};$('#a8r').onclick=()=>{s=0;$$('#a8 .box').forEach(b=>b.classList.remove('on'));$('#a8t').textContent='Appuie sur « Étape suivante ».'}});
+
+mod('9. Liens, images, formulaires',()=>`
+<h2>Liens, images et formulaires</h2>
+<h3>A. Liens</h3><p><code>href</code> = fichier local (<code>mon_autre_page.html</code>) ou adresse d'un site (<code>http://www.google.fr</code>). Le texte entre les balises est souligné en bleu par défaut (modifiable en CSS). Un lien peut se trouver en plein milieu d'un paragraphe.</p>
+${lab(`<p>Un lien vers <a href="mon_autre_page.html">mon autre page</a> et un lien vers <a href="http://www.google.fr">google.fr</a>, au milieu d'un paragraphe.</p>`,null)}
+<h3>B. Images</h3><ul><li><code>src</code> : fichier image, ou chemin s'il est dans un autre dossier (ex : <code>images/avion.jpg</code>).</li><li><code>alt</code> : description, utilisée par les lecteurs d'écran pour les non-voyants : <b>toujours</b> le renseigner.</li></ul>
+${code('<img src="mon_image.jpg" alt="avion"/>')}
+<p>Ici, <code>src</code> est introuvable : regarde comment le <code>alt</code> s'affiche à la place.</p>${lab(`<img src="introuvable.jpg" alt="avion"/>`,null)}
+<h3>C. Formulaires (À faire vous-même 7)</h3><p>Saisis du texte, coche la case, clique sur le bouton.</p>
+${lab(`<form>\n  <p>voici un champ de texte : <input type="text"/></p>\n  <p>voici une checkbox <input type="checkbox"/></p>\n  <button>Cliquez ici !</button>\n</form>`,null)}`);
+
+mod('10. Block et inline',()=>`
+<h2>Éléments block et inline</h2><p class="sub">Les balises s'affichent les unes après les autres : c'est le <b>flux normal</b>.</p>
+<table><tr><th>block</th><th>inline</th></tr><tr><td>p, div, h1…<br>Les uns <b>en dessous</b> des autres.<br>Prend toute la largeur.</td><td>strong, img, span, a<br>Les uns <b>à côté</b> des autres.<br>Prend juste la largeur nécessaire.</td></tr></table>
+<div class="card demo"><div id="d10"><div class="e" data-n="div">div</div><div class="e" data-n="p">p</div><div class="e inl0" data-n="span">span</div><div class="e inl0" data-n="a">a</div><div class="e" data-n="h1">h1</div><div class="e inl0" data-n="strong">strong</div><div class="e inl0" data-n="span">span</div></div>
+<button class="b" id="d1">▶ Animer le flux</button><button class="b g" id="d2">Mode normal</button><button class="b g" id="d3">Tout en INLINE</button><button class="b g" id="d4">Tout en BLOCK</button></div>
+<h3>À faire vous-même 8</h3>${lab(`<div>div est une balise de type "block"</div>\n<p>la balise p est une autre balise de type block</p>\n<span>En revanche, span est une balise de type "inline"</span>\n<a href="www.google.fr">Et voici une autre balise de type "inline"</a>\n<h1>h1 est bien une balise de type "block"</h1>\n<span>la malheureuse balise span est "obligée" de se placer en dessous</span>`,null)}
+<h3>À faire vous-même 9</h3><p>Élabore ta propre page avec les balises vues : rends-toi dans le <b>Laboratoire</b> (activité 9 / page complète).</p>`,
+()=>{const els=$$('#d10 .e');const set=m=>els.forEach(e=>{e.style.opacity=1;e.classList.toggle('inl',m==='i'||(m==='n'&&e.classList.contains('inl0')))});
+$('#d2').onclick=()=>set('n');$('#d3').onclick=()=>set('i');$('#d4').onclick=()=>set('b');
+$('#d1').onclick=()=>{set('n');els.forEach(e=>e.style.opacity=0);els.forEach((e,k)=>setTimeout(()=>e.style.opacity=1,k*600))};set('n')});
+
+/* ============ Laboratoire ============ */
+const PRE={
+'AFV 1':['<h1>Hello World! Ceci est un titre</h1>\n<p>Ceci est un <strong>paragraphe</strong>. Avez-vous bien compris ?</p>',''],
+'AFV 2':['<h1>Ceci est un titre</h1>\n<h2 class="titre_1">Ceci est un sous titre</h2>\n<p id="para_1">Ceci est un <strong>paragraphe</strong>. Avez-vous bien compris ?</p>',''],
+'AFV 3':['<h1>Ceci est un titre</h1>\n<h2>Ceci est un sous titre</h2>\n<p>Ceci est un <strong>paragraphe</strong>. Avez-vous bien compris ?</p>','h1\n{\n  text-align: center;\n  background-color: red;\n}\nh2\n{\n  font-family: Verdana;\n  font-style: italic;\n  color: green;\n}'],
+'AFV 4':['<h1>Ceci est un titre</h1>\n<h2>Ceci est un sous titre</h2>\n<p id="para_1">Ceci est un <strong>paragraphe</strong>. Avez-vous bien compris ?</p>','#para_1\n{\n  font-style: italic;\n  color: green;\n}'],
+'AFV 5-6':['<!doctype html>\n<html lang="fr">\n<head>\n  <meta charset="utf-8">\n  <title>Voici mon site</title>\n  <link rel="stylesheet" href="style.css">\n</head>\n<body>\n  <h1>Hello World! Ceci est un titre</h1>\n  <p>Ceci est un <strong>paragraphe</strong>. Avez-vous bien compris ?</p>\n</body>\n</html>','h1\n{\n  text-align: center;\n  background-color: red;\n}\np\n{\n  font-family: Verdana;\n  font-style: italic;\n  color: green;\n}'],
+'AFV 7':['<!doctype html>\n<html lang="fr">\n<head>\n  <meta charset="utf-8">\n  <title>Voici mon site</title>\n</head>\n<body>\n  <form>\n    <p>voici un champ de texte : <input type="text"/></p>\n    <p>voici une checkbox <input type="checkbox"/></p>\n    <button>Cliquez ici !</button>\n  </form>\n</body>\n</html>',''],
+'AFV 8':['<!doctype html>\n<html lang="fr">\n<head>\n  <meta charset="utf-8">\n  <title>Voici mon site</title>\n</head>\n<body>\n  <div>div est une balise de type "block"</div>\n  <p>la balise p est une autre balise de type block</p>\n  <span>En revanche, span est une balise de type "inline"</span>\n  <a href="www.google.fr">Et voici une autre balise de type "inline"</a>\n  <h1>h1 est bien une balise de type "block"</h1>\n  <span>la malheureuse balise span est "obligée" de se placer en dessous</span>\n</body>\n</html>',''],
+'AFV 9 (libre)':['<!doctype html>\n<html lang="fr">\n<head>\n  <meta charset="utf-8">\n  <title>Ma page</title>\n  <link rel="stylesheet" href="style.css">\n</head>\n<body>\n  <h1>Ma page</h1>\n  <p>À toi de jouer !</p>\n</body>\n</html>','h1\n{\n  text-align: center;\n}']};
+function gutter(ta){const g=ta.previousElementSibling,n=ta.value.split('\n').length;g.textContent=Array.from({length:n},(_,i)=>i+1).join('\n');g.scrollTop=ta.scrollTop}
+function labFull(root){const sel=$('#ps',root),H=$('#lh',root),C=$('#lc',root),f=$('iframe',root);
+ const load=()=>{[H.value,C.value]=PRE[sel.value];gutter(H);gutter(C);run()};
+ const run=()=>{const b=balance(H.value);$('#le',root).textContent=b.ok?'':'⚠ '+b.msg;f.srcdoc=build(H.value,C.value)};
+ [H,C].forEach(t=>{t.addEventListener('input',()=>gutter(t));t.addEventListener('scroll',()=>t.previousElementSibling.scrollTop=t.scrollTop);t.addEventListener('keydown',e=>{if(e.key==='Tab'){e.preventDefault();const s=t.selectionStart;t.setRangeText('  ',s,t.selectionEnd,'end')}})});
+ sel.onchange=load;$('#lr',root).onclick=run;$('#lx',root).onclick=load;
+ $('#lcp',root).onclick=()=>{const t=H.value+'\n\n/* style.css */\n'+C.value;(navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(()=>$('#lm',root).textContent='Code copié ✔').catch(()=>{H.select();document.execCommand('copy');$('#lm',root).textContent='Code HTML copié ✔'})};load()}
+
+/* ============ Activités ============ */
+const SEL=(a,o)=>`<select data-a="${a}"><option value="">?</option>${o.map(x=>`<option>${x}</option>`).join('')}</select>`;
+const TXT=(a,w=10)=>`<input data-a="${a}" size="${w}" autocomplete="off">`;
+const ACT=[
+{t:'1. Reconstituer une structure HTML',g:'Complète les mots manquants de la structure d\'une page.',b:`<pre class="code" style="line-height:2">&lt;!doctype ${TXT('html',5)}&gt;
+&lt;html ${TXT('lang',5)}="fr"&gt;
+&lt;${TXT('head',6)}&gt;
+  &lt;meta ${TXT('charset',8)}="utf-8"&gt;
+  &lt;${TXT('title',6)}&gt;Voici mon site&lt;/title&gt;
+&lt;/head&gt;
+&lt;${TXT('body',6)}&gt; … &lt;/body&gt;
+&lt;/html&gt;</pre>`,s:'doctype html = HTML5 ; lang="fr" = langue ; head = en-tête ; meta charset = encodage ; title = titre de l\'onglet ; body = contenu visible.'},
+{t:'2. Associer une balise à son rôle',g:'Choisis le rôle de chaque balise.',b:`<table><tr><td><code>h1</code></td><td>${SEL('titre',['titre important','paragraphe','lien','saut de ligne'])}</td></tr><tr><td><code>p</code></td><td>${SEL('paragraphe',['titre important','paragraphe','lien','saut de ligne'])}</td></tr><tr><td><code>a</code></td><td>${SEL('lien',['titre important','paragraphe','lien','saut de ligne'])}</td></tr><tr><td><code>br</code></td><td>${SEL('saut de ligne',['titre important','paragraphe','lien','saut de ligne'])}</td></tr></table>`,s:'h1 = titre important, p = paragraphe, a = lien hypertexte, br = saut de ligne.'},
+{t:'3. Corriger les erreurs de fermeture',g:'Ce code a des balises non fermées. Corrige-le.',b:`<textarea class="w mono" rows="4" style="width:100%">&lt;h1&gt;Mon titre\n&lt;p&gt;Un &lt;strong&gt;texte important&lt;/p&gt;</textarea>`,k:t=>balance(t).ok&&/<\/h1>/.test(t)&&/<\/strong>/.test(t)&&/<\/p>/.test(t),s:'Il faut fermer h1 (&lt;/h1&gt;) et strong (&lt;/strong&gt;) : <code>&lt;h1&gt;Mon titre&lt;/h1&gt;&lt;p&gt;Un &lt;strong&gt;texte important&lt;/strong&gt;&lt;/p&gt;</code>',tx:1},
+{t:'4. Corriger une erreur d\'imbrication',g:'Corrige cette imbrication interdite en gardant strong dans p.',b:`<textarea class="w mono" rows="3" style="width:100%">&lt;p&gt;Un &lt;strong&gt;mot&lt;/p&gt;&lt;/strong&gt;</textarea>`,k:t=>balance(t).ok&&/<p>.*<strong>.*<\/strong>.*<\/p>/is.test(t),s:'La dernière balise ouverte (strong) doit être fermée la première : <code>&lt;p&gt;Un &lt;strong&gt;mot&lt;/strong&gt;&lt;/p&gt;</code>',tx:1},
+{t:'5. Compléter des attributs manquants',g:'Écris le nom de l\'attribut qui manque.',b:`<pre class="code" style="line-height:2">&lt;a ${TXT('href',6)}="http://www.google.fr"&gt;Google&lt;/a&gt;
+&lt;img ${TXT('src',6)}="chat.jpg" ${TXT('alt',6)}="Un chat"/&gt;
+&lt;input ${TXT('type',6)}="checkbox"/&gt;</pre>`,s:'href = destination du lien ; src = fichier image ; alt = description ; type = rôle de l\'input.'},
+{t:'6. Identifier les sélecteurs CSS',g:'Indique ce que cible chaque sélecteur.',b:`<table><tr><td><code>#para_1</code></td><td>${SEL('un id',['un id','une class','une balise'])}</td></tr><tr><td><code>.titre_1</code></td><td>${SEL('une class',['un id','une class','une balise'])}</td></tr><tr><td><code>h1</code></td><td>${SEL('une balise',['un id','une class','une balise'])}</td></tr></table>`,s:'# = id (un seul élément) ; . = class (plusieurs éléments possibles) ; le nom seul = toutes les balises de ce type.'},
+{t:'7. Relier un fichier HTML à un fichier CSS',g:'Écris la ligne qui relie le fichier <b>style.css</b> placé dans le dossier <b>CSS</b>.',b:`<input data-a='&lt;link rel="stylesheet" href="css/style.css"&gt;' style="width:100%" autocomplete="off" placeholder="…">`,dec:1,s:'<code>&lt;link rel="stylesheet" href="CSS/style.css"&gt;</code> (dans le head).'},
+{t:'8. Construire un formulaire',g:'Écris un formulaire avec un champ texte, une case à cocher et un bouton.',b:`<textarea class="w mono" rows="6" style="width:100%"></textarea>`,k:t=>balance(t).ok&&/<form/.test(t)&&/type="text"/.test(t)&&/type="checkbox"/.test(t)&&/<button/.test(t),s:'<code>&lt;form&gt;&lt;input type="text"/&gt;&lt;input type="checkbox"/&gt;&lt;button&gt;OK&lt;/button&gt;&lt;/form&gt;</code>',tx:1},
+{t:'9. Block ou inline ?',g:'Classe chaque balise.',b:['div','p','h1','span','strong','a','img'].map(x=>`<code>${x}</code> ${SEL(['div','p','h1'].includes(x)?'block':'inline',['block','inline'])} &nbsp;`).join(''),s:'block : div, p, h1 (les uns sous les autres). inline : span, strong, a, img (les uns à côté des autres).'},
+{t:'10. Réaliser une petite page complète',g:'Écris une page avec doctype, html lang, head (meta, title), body, un h1, un p et un lien.',b:`<textarea class="w mono" rows="10" style="width:100%"></textarea>`,k:t=>balance(t).ok&&/<!doctype html>/i.test(t)&&/<html lang=/.test(t)&&/<head>/.test(t)&&/<title>/.test(t)&&/<body>/.test(t)&&/<h1>/.test(t)&&/<p>/.test(t)&&/<a href=/.test(t),s:'Modèle : doctype, html lang="fr", head avec meta charset et title, body avec h1, p et a href.',tx:1}];
+
+function renderAct(el,i){const a=ACT[i];el.innerHTML=`<div class="card"><h3 style="margin-top:0">${a.t}</h3><p><b>Consigne :</b> ${a.g}</p>${a.b}<div><button class="b ver">Vérifier</button><button class="b g rec">Recommencer</button></div><div class="res"></div></div>`;
+ $('.rec',el).onclick=()=>renderAct(el,i);
+ $('.ver',el).onclick=()=>{let ok=true,msg='';
+  if(a.k){const t=$('textarea',el).value;ok=a.k(t);if(a.tx){const b=balance(t);if(!b.ok)msg=b.msg}}
+  else $$('[data-a]',el).forEach(x=>{const e=a.dec?norm(x.dataset.a):norm(x.dataset.a),v=norm(x.value);const good=a.dec?v===e:v===e;x.style.outline='2px solid '+(good?'var(--ok)':'var(--ko)');if(!good)ok=false});
+  $('.res',el).innerHTML=`<p class="${ok?'ok':'ko'}">${ok?'✔ Bravo, c\'est correct !':'✘ Pas encore. '+esc(msg)}</p><div class="tip"><b>Correction :</b> ${a.s}</div>`;
+  if(ok){const d=store.get('act',[]);if(!d.includes(i)){d.push(i);store.set('act',d)}}}}
+
+/* ============ Évaluation ============ */
+const Q=[
+{l:1,c:'HTML',q:'HTML est un langage…',o:['de programmation','de description (balisage)','de base de données'],a:1,e:'HTML décrit la page ; il n\'a ni boucle ni condition.'},
+{l:1,c:'Balises',q:'Quelle balise fermante correspond à <p> ?',o:['<p/>','</p>','<\\p>'],a:1,e:'La fermante est de la forme </nom>.'},
+{l:1,c:'Balises',v:1,q:'Vrai ou faux : la balise <br/> est à la fois ouvrante et fermante.',a:true,e:'C\'est une balise auto-fermante.'},
+{l:1,c:'Structure',q:'Où se place tout le contenu visible ?',o:['dans <head>','dans <body>','dans <title>'],a:1,e:'Le contenu visible est entre <body> et </body>.'},
+{l:1,c:'CSS',q:'En CSS, quel signe sélectionne un id ?',o:['.','#','*'],a:1,e:'# pour id, . pour class.'},
+{l:2,c:'Attributs',v:1,q:'Vrai ou faux : on peut utiliser plusieurs fois le même id dans une page.',a:false,e:'L\'id est unique ; la class peut être répétée.'},
+{l:2,c:'Balises',q:'Quel code est correctement imbriqué ?',o:['<p><strong>a</p></strong>','<p><strong>a</strong></p>','<strong><p>a</strong></p>'],a:1,e:'La dernière ouverte doit être la première fermée.'},
+{l:2,c:'Structure',q:'La balise <title> définit…',o:['le titre affiché dans la page','le titre de l\'onglet du navigateur','un sous-titre'],a:1,e:'title est dans le head ; le titre visible est h1.'},
+{l:2,c:'Block/inline',q:'Quel élément est de type inline ?',o:['div','p','span'],a:2,e:'span, strong, img et a sont inline.'},
+{l:2,c:'CSS',q:'Que fait <code>p { color: green; }</code> ?',o:['rend le premier p vert','rend tous les paragraphes verts','rend la class p verte'],a:1,e:'Un sélecteur de balise cible toutes les balises de ce type.'},
+{l:3,c:'Attributs',t:1,q:'Complète : <code>&lt;img ___="chat.jpg" alt="un chat"/&gt;</code> (nom de l\'attribut)',a:['src'],e:'src indique le fichier de l\'image.'},
+{l:3,c:'CSS',t:1,q:'Écris le sélecteur CSS qui cible <code>&lt;p class="note"&gt;</code>',a:['.note'],e:'Un point devant le nom de la class.'},
+{l:3,c:'Structure',t:1,q:'Complète : <code>&lt;link rel="stylesheet" ___="style.css"&gt;</code>',a:['href'],e:'href donne le chemin du fichier CSS.'},
+{l:3,c:'Block/inline',q:'Trois <span> consécutifs sont affichés…',o:['les uns sous les autres','les uns à côté des autres','impossible à dire'],a:1,e:'span est inline : il prend la largeur nécessaire et se place à côté.'}];
+const MODC={HTML:'1',Balises:'2 et 3','Attributs':'4','CSS':'5 et 6',Structure:'7 et 8','Block/inline':'10'};
+function renderQuiz(el){el.innerHTML=`<h2>Évaluation</h2><p class="sub">${Q.length} questions · 3 niveaux · la correction s'affiche après validation.</p><form id="qf" onsubmit="return false">${Q.map((q,i)=>`<div class="card"><b>Niveau ${q.l} – Q${i+1}.</b> ${q.q.replace(/<(?!\/?code|\/?\/)/g,'&lt;')}<div style="margin-top:6px">${q.t?`<input name="q${i}" autocomplete="off">`:q.v?['Vrai','Faux'].map((x,j)=>`<label><input type="radio" name="q${i}" value="${j}"> ${x}</label> `).join(''):q.o.map((x,j)=>`<div><label><input type="radio" name="q${i}" value="${j}"> ${esc(x)}</label></div>`).join('')}</div><div class="fb" id="fb${i}"></div></div>`).join('')}<button class="b" id="qv">Valider mes réponses</button></form><div id="qr"></div>`;
+ $('#qv').onclick=()=>{let n=0;const cp={};Q.forEach((q,i)=>{const f=document.forms.qf.elements['q'+i];let ok;
+  if(q.t)ok=q.a.includes(norm(f.value).replace(/ /g,''));else{const v=f.value;ok=v!==''&&(q.v?(v==='0')===q.a:+v===q.a)}
+  const r=cp[q.c]=cp[q.c]||[0,0];r[1]++;if(ok){n++;r[0]++}
+  $('#fb'+i).innerHTML=`<p class="${ok?'ok':'ko'}">${ok?'✔ Correct':'✘ Incorrect'} — ${q.e}</p>`});
+  const note=Math.round(n/Q.length*40)/2,pc=Math.round(n/Q.length*100),weak=Object.entries(cp).filter(([k,v])=>v[0]<v[1]).map(([k])=>`module ${MODC[k]} (${k})`);
+  store.set('note',note);
+  $('#qr').innerHTML=`<div class="card"><h3 style="margin-top:0">Note : ${note}/20 — ${pc} % de réussite</h3><table>${Object.entries(cp).map(([k,v])=>`<tr><td>${k}</td><td>${v[0]}/${v[1]}</td></tr>`).join('')}</table><div class="tip">${weak.length?'À revoir : '+weak.join(', ')+'.':'Excellent, toutes les notions sont maîtrisées !'}</div><button class="b g" id="qre">Recommencer</button></div>`;
+  $('#qre').onclick=()=>{renderQuiz(el);scrollTo(0,0)};$('#qr').scrollIntoView()}}
+
+/* ============ Fiche de révision ============ */
+const FICHE=()=>`<h2>Fiche de révision</h2><button class="b noprint" onclick="print()">🖨 Imprimer / Enregistrer en PDF</button>
+<h3>Balises</h3><table><tr><th>Balise</th><th>Rôle</th><th>Type</th></tr><tr><td>h1,h2,h3</td><td>Titres</td><td>block</td></tr><tr><td>p</td><td>Paragraphe</td><td>block</td></tr><tr><td>strong</td><td>Texte important</td><td>inline</td></tr><tr><td>br</td><td>Saut de ligne</td><td>–</td></tr><tr><td>a</td><td>Lien</td><td>inline</td></tr><tr><td>img</td><td>Image</td><td>inline</td></tr><tr><td>form, input, button</td><td>Formulaire, champ, bouton</td><td>–</td></tr><tr><td>div / span</td><td>Génériques</td><td>block / inline</td></tr></table>
+<h3>Attributs</h3><table><tr><th>id</th><td>identifiant unique</td></tr><tr><th>class</th><td>groupe réutilisable</td></tr><tr><th>href</th><td>cible d'un lien / d'une feuille de style</td></tr><tr><th>src</th><td>fichier image</td></tr><tr><th>alt</th><td>description de l'image</td></tr><tr><th>type</th><td>text, checkbox…</td></tr></table>
+<h3>Propriétés CSS</h3><table><tr><th>text-align</th><td>alignement du texte (center…)</td></tr><tr><th>background-color</th><td>couleur de fond</td></tr><tr><th>font-family</th><td>police</td></tr><tr><th>font-style</th><td>italic, normal</td></tr><tr><th>color</th><td>couleur du texte</td></tr></table>
+<h3>Comparaisons</h3><table><tr><th>HTML</th><td>contenu et sémantique</td><th>CSS</th><td>présentation</td></tr><tr><th>id (#)</th><td>un seul élément</td><th>class (.)</th><td>plusieurs éléments</td></tr><tr><th>block</th><td>l'un sous l'autre, toute la largeur</td><th>inline</th><td>l'un à côté de l'autre, largeur nécessaire</td></tr></table>
+<h3>Page complète commentée</h3>${code(`<!doctype html>                      <!-- HTML5 -->
+<html lang="fr">                     <!-- langue : français -->
+<head>                               <!-- en-tête -->
+  <meta charset="utf-8">             <!-- encodage -->
+  <title>Voici mon site</title>      <!-- titre de l'onglet -->
+  <link rel="stylesheet" href="style.css"> <!-- lien vers le CSS -->
+</head>
+<body>                               <!-- contenu visible -->
+  <h1>Titre</h1>
+  <p id="para_1">Texte <strong>important</strong></p>
+</body>
+</html>
+
+/* style.css */
+h1 { text-align: center; background-color: red; }
+#para_1 { font-style: italic; color: green; }   /* cible un id */
+.titre_1 { color: green; }                       /* cible une class */`)}`;
+
+/* ============ Navigation et progression ============ */
+const V=[...M.map((m,i)=>({id:i,t:m.t})),{id:'lab',t:'🧪 Laboratoire HTML/CSS'},{id:'act',t:'✏️ Activités'},{id:'quiz',t:'📝 Évaluation'},{id:'fiche',t:'📄 Fiche de révision'}];
+let cur=store.get('last',0),done=store.get('done',[]);
+function menu(){$('#menu').innerHTML='';V.forEach(v=>{const b=document.createElement('button');b.className='it'+(v.id===cur?' cur':'')+(done.includes(v.id)?' done':'');b.textContent=v.t;b.onclick=()=>go(v.id);$('#menu').append(b)});
+ const n=done.filter(x=>typeof x==='number').length;$('#pb').style.width=n*10+'%';$('#pt').textContent=`Progression : ${n}/10 modules`}
+function go(id){cur=id;store.set('last',id);const el=$('#view');$('#nav').classList.remove('o');
+ if(typeof id==='number'){const m=M[id];el.innerHTML=m.h()+`<p class="noprint"><button class="b" id="md">${done.includes(id)?'✔ Module terminé':'Marquer ce module comme terminé'}</button> ${id<9?'<button class="b g" id="nx">Module suivant ▶</button>':'<button class="b g" id="nx">Passer aux activités ▶</button>'}</p>`;initLabs(el);m.i&&m.i();
+  $('#md').onclick=()=>{if(!done.includes(id))done.push(id);store.set('done',done);menu();$('#md').textContent='✔ Module terminé'};$('#nx').onclick=()=>go(id<9?id+1:'act')}
+ else if(id==='lab'){el.innerHTML=`<h2>Laboratoire HTML/CSS</h2><p class="sub">Modifie le code, puis clique sur Exécuter. Les activités du PDF sont préchargées.</p><div id="L"><div class="lab big"><div class="ed"><select id="ps">${Object.keys(PRE).map(k=>`<option>${k}</option>`).join('')}</select> <button class="b" id="lr">▶ Exécuter</button><button class="b g" id="lx">Réinitialiser</button><button class="b g" id="lcp">Copier le code</button> <span id="lm" class="ok"></span><br><label>HTML</label><div class="gw"><div class="gut"></div><textarea id="lh" spellcheck="false"></textarea></div><label>CSS (style.css)</label><div class="gw"><div class="gut"></div><textarea id="lc" spellcheck="false"></textarea></div><div class="err" id="le"></div></div><div><iframe sandbox title="Aperçu"></iframe></div></div></div><div class="tip">L'aperçu est isolé dans une iframe sécurisée (sans scripts). La ligne <code>&lt;link rel="stylesheet"…&gt;</code> utilise automatiquement le CSS ci-dessus. Les erreurs de balises sont signalées sous les éditeurs.</div>`;labFull($('#L'))}
+ else if(id==='act'){el.innerHTML=`<h2>Activités interactives</h2><p class="sub">Chaque activité a une consigne, un espace de travail, « Vérifier » (avec correction) et « Recommencer ».</p>`+ACT.map((a,i)=>`<div id="ac${i}"></div>`).join('');ACT.forEach((a,i)=>renderAct($('#ac'+i),i))}
+ else if(id==='quiz')renderQuiz(el);else el.innerHTML=FICHE();
+ menu();scrollTo(0,0)}
+$('#theme').onclick=()=>{const t=document.documentElement.dataset.t==='dark'?'light':'dark';document.documentElement.dataset.t=t;store.set('theme',t)};
+document.documentElement.dataset.t=store.get('theme',matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light');
+$('#resume').onclick=()=>go(store.get('last',0));$('#burger').onclick=()=>$('#nav').classList.toggle('o');
+go(cur);
+</script>
+</body>
+</html>
